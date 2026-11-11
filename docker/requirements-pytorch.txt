@@ -1,8 +1,10 @@
 # Extras for the "pytorch" image (quay.io/jupyter/pytorch-notebook:2026-11-02,
 # CPU torch 2.15, torchvision 0.29). Exact versions, checked on PyPI on 2026-11-11.
 datasets==5.2.0                  # week7-segment_houses_smartly.ipynb
+# faiss-cpu 1.16.0 came out on 2026-11-10; 1.15.1 (September 2026) is the last settled release.
+faiss-cpu==1.15.1                # week4-rag-pipeline.ipynb
 icecream==2.2.0                  # week6-dilation-pytorch.py, week6-padding.py
 opencv-python-headless==5.0.0.93 # week7-segment_houses_smartly.ipynb (cv2)
 segment-anything==1.0            # week7-segment_houses_smartly.ipynb
-sentence-transformers==6.2.0     # week9-local_llm.ipynb
-transformers==5.22.2             # week9-local_llm.ipynb
+sentence-transformers==6.2.0     # week9-local_llm.ipynb, week4-*.ipynb
+transformers==5.22.2             # week9-local_llm.ipynb, week4-*.ipynb

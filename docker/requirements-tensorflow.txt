@@ -2,7 +2,6 @@
 # TensorFlow 2.21.0, Keras 3.15.1). Exact versions, checked on PyPI on 2026-11-11.
 icecream==2.2.0              # week5_human_activity_LSTM.ipynb, week6-flatten.py
 tslearn==0.10.0              # week5_human_activity_LSTM.ipynb
-yfinance==1.8.0              # week8-lstm.py
 # week6-flatten.py compares tf.keras.layers.Flatten with torch.flatten, so
 # this image also needs PyTorch: the CPU build, the same version as the
 # pytorch image, from PyTorch's own index (PyPI's wheel pulls in CUDA).
