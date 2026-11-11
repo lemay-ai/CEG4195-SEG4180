@@ -1,0 +1,46 @@
+text,label
+"I was charged twice for my subscription this month.",billing
+"Can I get a refund for the annual plan I bought yesterday?",billing
+"My invoice shows the wrong company name.",billing
+"Why did my monthly price go up from 12 to 15 dollars?",billing
+"The credit card payment keeps getting declined at checkout.",billing
+"Please send me a receipt for last month's payment.",billing
+"I cancelled but you still took money from my account.",billing
+"Do you offer a student discount on the pro plan?",billing
+"How do I switch from monthly to yearly billing?",billing
+"The tax on my bill looks too high for Ontario.",billing
+"I need to update the card you charge every month.",billing
+"Your app charged me in US dollars instead of Canadian dollars.",billing
+"Is there a fee if I downgrade my plan?",billing
+"I forgot my password and the reset email never arrives.",account
+"How do I change the email address on my profile?",account
+"Please delete my account and all my data.",account
+"Someone else logged into my account from another country.",account
+"I want to add a second user to our team workspace.",account
+"Can I change my username?",account
+"My account is locked after too many login attempts.",account
+"How do I turn on two-factor authentication?",account
+"I'd like to transfer ownership of the workspace to my colleague.",account
+"I can't log in with my Google account anymore.",account
+"How do I download a copy of all my personal data?",account
+"Please merge my two accounts into one.",account
+"The app crashes every time I open the camera screen.",technical
+"Exports to CSV come out empty since the last update.",technical
+"The website is very slow to load in Firefox.",technical
+"I get error 502 when I upload a file larger than 10 MB.",technical
+"The sync between my phone and laptop stopped working.",technical
+"Notifications don't show up on Android 15.",technical
+"The search box returns no results even for exact titles.",technical
+"Your API returns a timeout after 30 seconds.",technical
+"The dark mode makes the text unreadable on the settings page.",technical
+"After the update the app won't start on my Mac.",technical
+"Charts on the dashboard show yesterday's data, not today's.",technical
+"The French translation is missing on the checkout button.",technical
+"Printing an invoice from the app gives a blank page.",technical
+"Le paiement a été prélevé deux fois sur ma carte.",billing
+"Je n'arrive plus à me connecter à mon compte.",account
+"L'application plante quand j'ouvre l'appareil photo.",technical
+"I was billed after my free trial even though I cancelled on day 5.",billing
+"I can't reset my password because the reset link says expired.",account
+"The payment page freezes when I click Pay.",technical
+"My receipt email goes to my old address, how do I change it?",account
