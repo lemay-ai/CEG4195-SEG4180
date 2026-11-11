@@ -1,4 +1,5 @@
-!pip install icecream torch
+# container: pytorch
+# Outside the course container: pip install icecream torch
 import torch
 from icecream import ic
 
@@ -10,23 +11,19 @@ ic(tensor)
 # Define kernel size and dilation
 kernel_size = (3, 3)
 for dilation in range(1, 4):
-  # Calculate the effective kernel size with dilation
-  effective_kernel_size = ((kernel_size[0] - 1) * dilation + 1, (kernel_size[1] - 1) * dilation + 1)
+    # A 3x3 kernel with dilation d spans (3 - 1) * d + 1 pixels each way: 3, 5, then 7
 
-  # Calculate padding to maintain output size
-  padding = ((effective_kernel_size[0] - 1) // 2, (effective_kernel_size[1] - 1) // 2)
+    # Print the values the kernel reads at its first position
+    strategy = f"Values accessed by a {kernel_size} kernel with dilation {dilation}:"
+    ic(strategy)
+    for row in range(tensor.shape[0] - (kernel_size[0] - 1) * dilation):
+        for col in range(tensor.shape[1] - (kernel_size[1] - 1) * dilation):
+            # Calculate the indices for the dilated kernel
+            rows = [row + i * dilation for i in range(kernel_size[0])]
+            cols = [col + j * dilation for j in range(kernel_size[1])]
 
-  # Iterate and print values within the kernel with dilation
-  strategy = f"Values accessed by a {kernel_size} kernel with dilation {dilation}:"
-  ic(strategy)
-  for row in range(tensor.shape[0] - (kernel_size[0] - 1) * dilation):
-      for col in range(tensor.shape[1] - (kernel_size[1] - 1) * dilation):
-          # Calculate the indices for the dilated kernel
-          rows = [row + i * dilation for i in range(kernel_size[0])]
-          cols = [col + j * dilation for j in range(kernel_size[1])]
-
-          # Extract values using advanced indexing
-          kernel_view = tensor[torch.tensor(rows)[:,None], torch.tensor(cols)]
-          ic(kernel_view)
-          break
-      break
+            # Extract values using advanced indexing
+            kernel_view = tensor[torch.tensor(rows)[:, None], torch.tensor(cols)]
+            ic(kernel_view)
+            break  # first position only
+        break

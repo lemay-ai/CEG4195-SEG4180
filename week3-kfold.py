@@ -1,7 +1,9 @@
+# container: scipy
 import numpy as np
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.linear_model import LogisticRegression # Example model
 
+# region: cv
 # Sample data (replace with your actual data)
 X = np.random.rand(100, 10)  # 100 samples, 10 features
 y = np.random.randint(0, 2, 100)  # 100 binary labels
@@ -17,3 +19,4 @@ scores = cross_val_score(model, X, y, cv=kf)
 
 # Print the cross-validation scores
 print("Cross-validation scores:", scores)
+# endregion

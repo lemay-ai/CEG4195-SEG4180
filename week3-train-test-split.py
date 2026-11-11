@@ -1,10 +1,12 @@
-from sklearn.model_selection import train_test_split
+# container: scipy
 import numpy as np
+from sklearn.model_selection import train_test_split
 
 # Sample data (replace with your actual data)
 X = np.random.rand(100, 10)  # 100 samples, 10 features
 y = np.random.randint(0, 2, 100)  # 100 binary labels
 
+# region: split
 # Split data into training, validation, and testing sets
 X_train, X_temp, y_train, y_temp = train_test_split(
     X, y, test_size=0.4, random_state=42
@@ -20,3 +22,4 @@ print("X_val shape:", X_val.shape)
 print("y_val shape:", y_val.shape)
 print("X_test shape:", X_test.shape)
 print("y_test shape:", y_test.shape)
+# endregion

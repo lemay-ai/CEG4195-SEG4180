@@ -1,0 +1,26 @@
+# Extras for the "scipy" image (quay.io/jupyter/scipy-notebook:2026-11-02).
+# Exact versions, checked on PyPI on 2026-11-11. The base image already has
+# numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, statsmodels and numba.
+datasets==5.2.0              # week2-dataset_streaming_example.py, week2-text_cleaning_pipeline.py
+faker==40.54.0               # week4-umap.py
+# gplearn 0.4.3 needs scikit-learn 1.8 or later (audit finding 3.2); 0.4.1 and
+# earlier predate scikit-learn 1.6 and do not run on the base image's 1.9.
+gplearn==0.4.3               # week3-gplearn.py
+graphviz==0.21               # week5-activation_functions.ipynb (the dot program is installed with apt)
+great-expectations==1.24.1   # week2-great_expectations.py
+groq==1.7.0                  # week9-groq.py
+icecream==2.2.0              # week1_tco.ipynb, week2-great_expectations.py, week7-mnist-semisupervised.py
+mlflow==3.18.0               # week11-mlflow_on_collab.ipynb
+pyngrok==9.1.4               # week11-mlflow_on_collab.ipynb
+python-dotenv==1.2.4         # week9-groq.py, week11-mlflow_on_collab.ipynb
+# TPOT 1.x (audit finding 3.1) asks only for scikit-learn 1.6 or later, and
+# fits and predicts on the base image's 1.9.1; the 0.12 line needs
+# scikit-learn below 1.6 and is not used. TPOT 1.1.0 imports stopit 1.1.2
+# (2018), which imports pkg_resources, and setuptools 82.0 removed
+# pkg_resources: so setuptools goes back to 81.0.0, the last release with it,
+# from the base image's 84.2.1 (scipy.Dockerfile lets this one package move).
+tpot==1.1.0                  # week3-tpot.py
+setuptools==81.0.0           # for tpot, see above
+tslearn==0.10.0              # week8-knn-dtw-hourly.py, week8-knn-dtw-minute.py
+umap-learn==0.6.0            # week4-umap.py
+yfinance==1.8.0              # week8-arima.py, week8-sarima.py, week8-sarimax.py, week8-knn-dtw-*.py

@@ -1,12 +1,13 @@
+# container: scipy
+# needs: network
 from datasets import load_dataset
-# Load Common Crawl dataset with streaming
-dataset = load_dataset("allenai/c4", "en", split="train",
-                       streaming=True,trust_remote_code=True)
+
+# Stream C4, a cleaned Common Crawl (hundreds of GB): no download up front
+dataset = load_dataset("allenai/c4", "en", split="train", streaming=True)
 print(next(iter(dataset)))
 
+# Save the first 1000 samples to a local file, reading only as far as needed
 with open("sample_data.txt", "w") as f:
-    for i,sample in enumerate(dataset):
+    for sample in dataset.take(1000):
         f.write(sample["text"] + "\n")
-        if i >= 1000:
-            break
-print(f"Downloaded {i} samples and saved to 'sample_data.txt'")
+print("Downloaded 1000 samples and saved to 'sample_data.txt'")

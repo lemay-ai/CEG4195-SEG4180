@@ -1,31 +1,27 @@
-!pip install icecream torch tensorflow
+# container: tensorflow
+# Outside the course container: pip install icecream tensorflow torch
 import tensorflow as tf
 import torch
 import numpy as np
-from icecream import  ic
+from icecream import ic
+
+# region: flatten
 data = np.array([[[1, 2, 3], [4, 5, 6]]])
-ic(data)
-
-# Example with tf.keras.layers.Flatten
-# Define a sample 2D array
 dimensions = "(batch_size, height, width)"
-tf_tensor = tf.constant(data, dtype=tf.float32)
-ic(tf_tensor.shape,dimensions)
+ic(data.shape, dimensions)
 
-# Create a Flatten layer
+# Keras: Flatten keeps the batch dimension
+tf_tensor = tf.constant(data, tf.float32)
 flatten_layer = tf.keras.layers.Flatten()
-# Flatten the tensor
-flattened_tf_tensor = flatten_layer(tf_tensor)
-ic(flattened_tf_tensor)
+ic(flatten_layer(tf_tensor))  # (1, 6)
 
-# Example with PyTorch
-
-torch_tensor = torch.tensor(data, dtype=torch.float32)
-ic(torch_tensor.shape,dimensions)
-# Flatten the tensor using view()
-flattened_torch_tensor = torch_tensor.view(-1)
-ic(flattened_torch_tensor)
+# PyTorch: view(-1) flattens everything
+torch_tensor = torch.tensor(data).float()
+flat_view = torch_tensor.view(-1)  # (6,)
+ic(flat_view)
 # Alternatively, use flatten()
-flattened_torch_tensor_2 = torch.flatten(torch_tensor)
-ic(flattened_torch_tensor_2)
-np.array_equal(flattened_torch_tensor_2,flattened_torch_tensor)
+flat_fn = torch.flatten(torch_tensor)
+ic(torch.equal(flat_view, flat_fn))
+# Keep the batch dimension, like Keras
+ic(torch.flatten(torch_tensor, start_dim=1))
+# endregion

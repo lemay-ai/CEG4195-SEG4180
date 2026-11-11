@@ -1,3 +1,4 @@
+# container: scipy
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LogisticRegression
@@ -66,7 +67,7 @@ tp_indices = np.where((y == 1) & (y_pred == 1))
 plt.scatter(X[tp_indices, 0], X[tp_indices, 1], marker='o', edgecolors='black', s=100, facecolors='none', label="TP")
 # TN
 tn_indices = np.where((y == 0) & (y_pred == 0))
-plt.scatter(X[tn_indices, 0], X[tn_indices, 1], marker='x', edgecolors='black', s=100, facecolors='none', label="TN")
+plt.scatter(X[tn_indices, 0], X[tn_indices, 1], marker='x', color='black', s=100, label="TN")  # 'x' is a line marker: colour it
 # FP
 fp_indices = np.where((y == 0) & (y_pred == 1))
 plt.scatter(X[fp_indices, 0], X[fp_indices, 1], marker='s', edgecolors='black', s=100, facecolors='none', label="FP")

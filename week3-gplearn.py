@@ -1,3 +1,7 @@
+# container: scipy
+import os
+
+# region: imports
 import numpy as np
 import matplotlib.pyplot as plt
 from gplearn.genetic import SymbolicRegressor
@@ -9,9 +13,11 @@ def squared(x):
 pow2 = make_function(function=squared, name='pow2', arity=1)
 function_set = ['add', 'log', 'abs', 'neg', 'inv', 'max', 'min', 'sin', 
                 'cos', 'tan', 'div', 'sqrt', 'sub', 'mul', pow2]
+# endregion
 
 # Step 1: Generate and show synthetic dataset of positive spherical quadrant surface
 
+# region: generate
 def generate_sphere_data(num_points, radius):
     """
     Generate synthetic dataset of positive points on the surface of a sphere.
@@ -25,15 +31,20 @@ def generate_sphere_data(num_points, radius):
         z = np.abs(radius * np.cos(theta))
         points.append([x, y, z])
     return np.array(points)
+# endregion
 
+# region: constants
 # Constants
 radius = 1.0  # Radius of the sphere
 num_points = 1000  # Number of points to generate
+# endregion
 
+# region: data
 # Generate data
 sphere_points = generate_sphere_data(num_points, radius)
 X = sphere_points[:, :2]  # x and y coordinates as input
 y = sphere_points[:, 2]   # z coordinate as output
+# endregion
 
 # Plot the dataset
 fig = plt.figure(figsize=(8, 8))
@@ -48,6 +59,7 @@ plt.show()
 # Step 2: Utilize Genetic Programming for Symbolic Regression
 # Using gplearn to rediscover governing equation
 
+# region: regressor
 # Create a symbolic regressor
 est_gp = SymbolicRegressor(
     population_size=10_000,
@@ -62,7 +74,13 @@ est_gp = SymbolicRegressor(
     random_state=42,
     function_set=function_set
 )
+# endregion
 
+# The smoke test (make code-test) evolves a small population for a few generations.
+if os.environ.get("COURSE_SMOKE"):
+    est_gp.set_params(population_size=500, generations=3)
+
+# region: fit
 # Train the symbolic regressor
 est_gp.fit(X, y)
 
@@ -71,6 +89,7 @@ print("Discovered equation:", est_gp._program)
 
 # Step 4: Evaluate the Discovered Model
 predicted_y = est_gp.predict(X)
+# endregion
 
 # Plot predicted vs actual
 plt.figure(figsize=(10, 6))

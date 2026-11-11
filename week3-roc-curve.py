@@ -1,3 +1,4 @@
+# container: scipy
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.datasets import make_classification
@@ -20,7 +21,7 @@ fpr, tpr, thresholds = roc_curve(y, y_scores)
 # AUC (Area Under ROC)
 roc_auc = roc_auc_score(y, y_scores)
 
-# 6) Plot ROC
+# Plot the ROC curve
 plt.figure(figsize=(8, 6))
 plt.plot(fpr, tpr, label=f'Receiver Operating Characteristic (ROC) Curve (AUC = {roc_auc:.2f})')
 plt.plot([0, 1], [0, 1], 'k--')  # diagonal baseline

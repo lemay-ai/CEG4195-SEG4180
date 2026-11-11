@@ -1,12 +1,16 @@
+# container: pytorch
+# needs: network
 # A pytorch dnn with dropout on MNIST dataset compared to a dnn without dropout
 # This is intentionally underpowered. Add layers and grow the layer width to get better results. Dropout did nothing for me here. LOL.
+
+import os
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
 
 # Define the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -16,6 +20,11 @@ batch_size = 64
 learning_rate = 0.01
 epochs = 10
 
+# COURSE_SMOKE=1 (the course's smoke test): 1 epoch on a tenth of the data
+smoke = os.environ.get("COURSE_SMOKE") == "1"
+if smoke:
+    epochs = 1
+
 # Define the transforms
 transform = transforms.Compose([
     transforms.ToTensor(),
@@ -24,7 +33,10 @@ transform = transforms.Compose([
 
 # Load the MNIST dataset
 train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
-test_dataset = datasets.MNIST('./data', train=False, transform=transform)
+test_dataset = datasets.MNIST('./data', train=False, download=True, transform=transform)
+if smoke:
+    train_dataset = Subset(train_dataset, range(6000))
+    test_dataset = Subset(test_dataset, range(1000))
 
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)

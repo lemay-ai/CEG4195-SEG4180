@@ -1,4 +1,5 @@
-# !pip install umap-learn faker
+# container: scipy
+# Outside the course container: pip install umap-learn faker
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -19,13 +20,13 @@ def create_synthetic_dataset():
         n_classes=4, 
         random_state=42
     )
+    Faker.seed(42)
     fake = Faker()
-    fake.seed_instance(42)
     
     feature_names = [f"Visit Frequency: {fake.company()}" for i in range(X.shape[1])]
     input_scaler = MinMaxScaler()
 
-    return pd.DataFrame(np.abs(input_scaler.fit_transform(X)), columns=feature_names), pd.Series(y, name="Class_Label")
+    return pd.DataFrame(np.abs(input_scaler.fit_transform(X)), columns=feature_names), pd.Series(y, name="Activity_Label")
 
 # Step 2: Preprocess Data
 def preprocess_data(X):
@@ -35,7 +36,8 @@ def preprocess_data(X):
 
 # Step 3: UMAP Embedding
 def apply_umap(X, n_neighbors=15, min_dist=0.1, n_components=2):
-    reducer = umap.UMAP(n_neighbors=n_neighbors, min_dist=min_dist, n_components=n_components, random_state=42)
+    reducer = umap.UMAP(n_neighbors=n_neighbors, min_dist=min_dist, n_components=n_components, random_state=42,
+                        compatibility_layout=True)  # the umap-learn 0.5 layout, as on the slides
     embedding = reducer.fit_transform(X)
     return pd.DataFrame(embedding, columns=["UMAP_1", "UMAP_2"])
 
@@ -50,8 +52,8 @@ def visualize_umap(embedding, labels):
         s=10, 
         alpha=0.7
     )
-    plt.colorbar(scatter, label="Class Label")
-    plt.title("UMAP Embedding of Synthetic Multi-Class Data")
+    plt.colorbar(scatter, label="Activity Label")
+    plt.title("UMAP Embedding of Human Activity Data")
     plt.xlabel("UMAP Dimension 1")
     plt.ylabel("UMAP Dimension 2")
     plt.grid(True, alpha=0.3)
@@ -70,5 +72,5 @@ umap_embedding = apply_umap(X_scaled)
 visualize_umap(umap_embedding, y)
 
 # Step 5: Visualize the raw data
-X["Class_Label"] = y
-X.head()
+X["Activity_Label"] = y
+print(X.head())

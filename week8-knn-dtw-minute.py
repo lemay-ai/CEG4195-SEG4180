@@ -1,58 +1,68 @@
-from tslearn.neighbors import KNeighborsTimeSeriesClassifier
+# container: scipy
+# needs: network
+# k-nearest neighbours with dynamic time warping (tslearn): from ten one-minute closing prices
+# of Alphabet (GOOG), predict whether the next minute closes higher. Prices come from Yahoo
+# Finance (yfinance); without the network, from data/week8-goog-minute.csv (five days
+# to 2026-11-10). Tested November 2026: yfinance 1.8.0, tslearn 0.10.0, scikit-learn 1.9.1.
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import yfinance as yf
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import StandardScaler
-import numpy as np
-import yfinance as yf
-import pandas as pd
+from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
-ticker = ['GOOG'] # Example ticker
-period = "5d"  # You can use "1d", "5d", "7d", "1mo", etc.
+SAVED_PRICES = Path(__file__).parent / "data" / "week8-goog-minute.csv"
 
-# Define the interval for hourly data
-interval = "1m"  # Other supported intervals include "1m", "5m", "1d", etc.
 
-# Fetch the data
-data = yf.download(ticker, period=period, interval=interval)
+def closing_prices(ticker, **when):
+    """Closing prices of one ticker: downloaded, or the saved copy when offline."""
+    data = yf.download([ticker], progress=False, **when)
+    if data.empty:  # no network
+        print(f"Download failed: using the prices saved in {SAVED_PRICES.name}")
+        return pd.read_csv(SAVED_PRICES, index_col=0)[ticker].dropna()
+    return data["Close"][ticker].dropna()
 
-# Prepare Data
-X = []
-y = []
+
+ticker = "GOOG"
+period = "5d"  # Also "1d", "7d" (one-minute prices go back 30 days)
+interval = "1m"  # Also "5m", "1h", "1d", ...
+prices = closing_prices(ticker, period=period, interval=interval).to_numpy()
+
+# Each sample is ten prices in a row.
+# Its label: is the next price higher than the last one?
+# region: windows
 window_size = 10
-
-prices = data["Close"][ticker].values
+X, y = [], []
 for j in range(len(prices) - window_size):
     X.append(prices[j:j + window_size])
-    y.append(prices[j + window_size]>prices[j + window_size-1])
+    y.append(prices[j + window_size] > prices[j + window_size - 1])
 
-X = np.array(X)
+# tslearn wants (samples, time steps, features)
+X = np.array(X).reshape(-1, window_size, 1)
 y = np.array(y)
+# endregion
 
-# Reshape data to match the required input format of tslearn
-X = X.reshape(len(X), window_size, 1)
+# Split in time order: the first 80% to train
+cutoff = int(len(X) * 0.8)
+X_train, X_test = X[:cutoff], X[cutoff:]
+y_train, y_test = y[:cutoff], y[cutoff:]
 
-# Split data
-cutoff = int(X.shape[0]*.8)
-X_train, X_test = X[:cutoff],X[cutoff:] 
-y_train, y_test = y[:cutoff],y[cutoff:] 
-
-# Normalize data
+# Scale with the training set's statistics only
 scaler = StandardScaler()
-X_train_reshaped = X_train.reshape(X_train.shape[0], -1)
-X_train_scaled = scaler.fit_transform(X_train_reshaped)
-X_train_scaled = X_train_scaled.reshape(X_train.shape)
+flat = X_train.reshape(len(X_train), -1)
+X_train = scaler.fit_transform(flat).reshape(X_train.shape)
+flat = X_test.reshape(len(X_test), -1)
+X_test = scaler.transform(flat).reshape(X_test.shape)
 
-X_test_reshaped = X_test.reshape(X_test.shape[0], -1)
-X_test_scaled = scaler.transform(X_test_reshaped) # Use transform, not fit_transform
-X_test_scaled = X_test_scaled.reshape(X_test.shape)
-
-# Train kNN Classifier
+# Train the kNN classifier with DTW as the distance
+# region: knn
 clf = KNeighborsTimeSeriesClassifier(metric="dtw")
-clf.fit(X_train_scaled, y_train)
+clf.fit(X_train, y_train)
 
-# Predict and Evaluate
-y_pred = clf.predict(X_test_scaled)
-
-accuracy = round(accuracy_score(y_test, y_pred),2)
-print(f"Accuracy: {accuracy}")
-
-print("Classification Report:\n", classification_report(y_test, y_pred))
+# Predict and evaluate
+y_pred = clf.predict(X_test)
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+# endregion
+print(classification_report(y_test, y_pred))
